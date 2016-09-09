@@ -8,6 +8,7 @@ var session = require('express-session');//导入session
 var MongoStore = require('connect-mongo')(session);
 var flash = require('connect-flash');
 
+
 var routes = require('./routes/index');
 var settings = require('./settings');//导入配置文件
 var users = require('./routes/users');
@@ -20,6 +21,20 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(flash());
 
+//这个一定要放在最前面
+app.use(session({
+  secret: settings.cookieSecret,
+  key: settings.db,//cookie name
+  cookie: {maxAge: 1000 * 60 * 60 * 24 * 30},//30Days
+  // store: new MongoStore({
+  //   db: settings.db,
+  //   host: settings.host,
+  //   port: settings.port
+  // })
+  store: new MongoStore({
+    url: 'mongodb://localhost/blog'
+  })
+}));
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
@@ -62,19 +77,7 @@ app.use(function(err, req, res, next) {
   });
 });
 
-app.use(session({
-  secret: settings.cookieSecret,
-  key: settings.db,//cookie name
-  cookie: {maxAge: 1000 * 60 * 60 * 24 * 30},//30Days
-  // store: new MongoStore({
-  //   db: settings.db,
-  //   host: settings.host,
-  //   port: settings.port
-  // })
-  store: new MongoStore({
-    url: 'mongodb://localhost/blog'
-  })
-}));
+
 
 
 module.exports = app;

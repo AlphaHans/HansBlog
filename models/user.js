@@ -14,7 +14,7 @@ User.prototype.save = function(callback) {
   var user = {
     name: this.name,
     password: this.password,
-    eamil: this.email
+    email: this.email
   };
 
   mongodb.open(function(err, db){
@@ -51,7 +51,7 @@ User.get = function (name, callback){
           mongodb.close();
           return callback(err);
         }
-
+ 
         collection.findOne({
           name:name
         }, function (err,user){
