@@ -1,5 +1,7 @@
-var crypto = require('crypto'),User  = require('../models/user.js');
+var crypto = require('crypto');
 var express = require('express');
+var User  = require('../models/user.js');
+var Post = require('../models/post.js');
 var router = express.Router();
 
 /**
@@ -7,7 +9,18 @@ var router = express.Router();
 */
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: '主页' });
+  Post.get(null, function(err, posts){
+    if(err) {
+      posts = [];
+    }
+    res.render('index', {
+      title:'主页',
+      user:req.session.user,
+      posts:posts,
+      success: req.flash('success').toString(),
+      error: req.flash('error').toString()
+    });
+  });
 });
 
 router.get('/reg', checkNotLogin);

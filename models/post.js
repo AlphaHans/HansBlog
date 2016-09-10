@@ -50,7 +50,7 @@ Post.get = function(name, callback){
   mongodb.open(function(err, db){
     if (err) {
       mongodb.close();
-      retrun callback(err);
+      return callback(err);
     }
     db.collection('posts', function(err, collection){
       var query = {};
